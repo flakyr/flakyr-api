@@ -1,0 +1,41 @@
+{
+	"parser": "babel-eslint",
+	"env": {
+		"node": true,
+		"es2020": true,
+		"mocha": true
+	},
+	"plugins": [
+		"prettier",
+		"mocha"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:prettier/recommended",
+		"prettier"
+	],
+	"parserOptions": {
+		"ecmaVersion": 2020,
+		"sourceType": "module"
+	},
+	"rules": {
+		"no-var": "error",
+		"indent": [
+			"error",
+			4
+		],
+		"linebreak-style": [
+			"error",
+			"unix"
+		],
+		"quotes": [
+			"error",
+			"single"
+		],
+		"semi": [
+			"error",
+			"always"
+		],
+		"newline-before-return": "error"
+	}
+}

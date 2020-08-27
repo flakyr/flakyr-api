@@ -1,0 +1,12 @@
+# ignore 3rd party lib
+node_modules
+
+# ignore logs
+*.log
+
+# ignore vs code project config files
+.vscode/settings.json
+.vs
+
+# ignore build
+build

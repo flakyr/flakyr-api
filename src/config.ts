@@ -1,7 +1,7 @@
 export const port = process.env.PORT || 8000;
 
 export const db = {
-    hostname: process.env.DB_HOSTNAME || 'localhost',
+    host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 27017,
     name: process.env.DB_NAME || 'flakyr',
     options: {

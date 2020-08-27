@@ -1,5 +1,5 @@
 {
-	"parser": "babel-eslint",
+	"parser": "@typescript-eslint/parser",
 	"env": {
 		"node": true,
 		"es2020": true,
@@ -7,12 +7,13 @@
 	},
 	"plugins": [
 		"prettier",
-		"mocha"
+		"mocha",
+		"@typescript-eslint"
 	],
 	"extends": [
-		"eslint:recommended",
-		"plugin:prettier/recommended",
-		"prettier"
+		"plugin:@typescript-eslint/recommended",
+		"prettier/@typescript-eslint",
+		"plugin:prettier/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 2020,
@@ -31,10 +32,6 @@
 		"quotes": [
 			"error",
 			"single"
-		],
-		"semi": [
-			"error",
-			"always"
 		],
 		"newline-before-return": "error"
 	}

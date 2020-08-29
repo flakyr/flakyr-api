@@ -1,6 +1,6 @@
 import { Schema, model, Document } from 'mongoose';
 
-export default interface Test extends Document {
+export default interface ITest extends Document {
     buildId: number;
     suiteName: string;
     status: boolean;
@@ -9,7 +9,7 @@ export default interface Test extends Document {
     parentBuildId: number;
 }
 
-const schema = new Schema(
+const TestSchema = new Schema(
     {
         buildId: {
             type: Number,
@@ -40,7 +40,6 @@ const schema = new Schema(
         },
         parentBuildId: {
             type: Number,
-            required: true,
         },
     },
     {
@@ -49,4 +48,24 @@ const schema = new Schema(
     }
 );
 
-export const TestModel = model<Test>('test', schema);
+TestSchema.pre<ITest>('save', async function (next) {
+    const parentBuildId = this.buildId;
+    const testName = `${this.suiteName}:${this.testName}`;
+
+    const countTestDublicates = await TestModel.find({
+        project: this.project,
+        testName,
+        parentBuildId: this.buildId,
+    }).countDocuments();
+
+    if (countTestDublicates) {
+        this.buildId = parseFloat(`${this.buildId}.${countTestDublicates}`);
+    }
+
+    this.testName = testName;
+    this.parentBuildId = parentBuildId;
+
+    next();
+});
+
+export const TestModel = model<ITest>('test', TestSchema);

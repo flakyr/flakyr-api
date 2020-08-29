@@ -8,8 +8,10 @@ export type CreateTestData = {
     project: string;
 };
 
+export type Projects = Array<string>;
+
 export default class TestService {
-    static async createTest(data: CreateTestData): Promise<Test> {
+    public static async createTest(data: CreateTestData): Promise<Test> {
         const parentBuildId = data.buildId;
         const testName = `${data.suiteName}:${data.testName}`;
         const test = {
@@ -31,5 +33,9 @@ export default class TestService {
         }
 
         return TestModel.create(test);
+    }
+
+    public static async getProjects(): Promise<Projects> {
+        return TestModel.find().distinct('project');
     }
 }

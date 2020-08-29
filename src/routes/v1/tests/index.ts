@@ -1,8 +1,8 @@
-import express, { Response, Request } from 'express';
+import { Router, Response, Request } from 'express';
 
 import TestService from 'services/test';
 
-const router = express.Router();
+const router = Router();
 
 router.post('/', async (req: Request, res: Response) => {
     const data = req.body;

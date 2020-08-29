@@ -7,20 +7,20 @@ import { TestModel } from 'database/models/test';
 import TestService, { CreateTestData } from './index';
 
 describe('Test service check', () => {
+    const createTestData: CreateTestData = {
+        status: false,
+        testName: 'test name',
+        suiteName: 'suite name',
+        buildId: 343,
+        project: 'project',
+    };
+
     beforeEach(async () => {
         await TestModel.deleteMany({});
     });
 
     it('create test', async () => {
         // arrange
-        const createTestData: CreateTestData = {
-            status: false,
-            testName: 'test name',
-            suiteName: 'suite name',
-            buildId: 343,
-            project: 'project',
-        };
-
         const expectedCreatedTest = {
             ...createTestData,
             testName: `${createTestData.suiteName}:${createTestData.testName}`,
@@ -36,14 +36,6 @@ describe('Test service check', () => {
 
     it('create test with buildId dublicate', async () => {
         // arrange
-        const createTestData: CreateTestData = {
-            status: false,
-            testName: 'test name',
-            suiteName: 'suite name',
-            buildId: 343,
-            project: 'project',
-        };
-
         const expectedCreatedTest = {
             ...createTestData,
             buildId: 343.1,
@@ -58,5 +50,21 @@ describe('Test service check', () => {
 
         // assert
         assert.deepEqual(omit(secondCreatedTest.toObject(), '_id'), expectedCreatedTest);
+    });
+
+    it('find projects', async () => {
+        // arrange
+        const secondProject = 'second-project';
+        const expectedProjects = [createTestData.project, secondProject];
+
+        // act
+        await TestService.createTest(createTestData);
+        await TestService.createTest(createTestData);
+        await TestService.createTest({ ...createTestData, project: secondProject });
+
+        const projects = await TestService.getProjects();
+
+        // assert
+        assert.deepEqual(expectedProjects, projects);
     });
 });

@@ -4,12 +4,13 @@ import Test, { TestModel } from 'database/models/test';
 
 export type BuildId = number;
 export type Project = string;
+export type TestName = string;
 
 export declare interface ICreateTestData {
     buildId: BuildId;
     suiteName: string;
     status: boolean;
-    testName: string;
+    testName: TestName;
     project: Project;
 }
 
@@ -26,5 +27,20 @@ export default class TestService {
         const ids = await TestModel.find({ project }).lean().distinct('buildId');
 
         return takeRight(ids, count);
+    }
+
+    public static async getTestNamesWithFailsTests(
+        project: Project,
+        ids: Array<BuildId>
+    ): Promise<Array<TestName>> {
+        const testNames = await TestModel.find({
+            project,
+            status: false,
+            buildId: { $in: ids },
+        })
+            .lean()
+            .distinct('testName');
+
+        return testNames;
     }
 }

@@ -46,10 +46,10 @@ describe('service: "TestService"', () => {
         // act
         await TestService.createTest(createTestData);
 
-        const secondCreatedTest = await TestService.createTest(createTestData);
+        const secondCreateTestData = await TestService.createTest(createTestData);
 
         // assert
-        assert.deepEqual(omit(secondCreatedTest.toObject(), '_id'), expectedCreatedTest);
+        assert.deepEqual(omit(secondCreateTestData.toObject(), '_id'), expectedCreatedTest);
     });
 
     it('method: "getProjects"', async () => {
@@ -72,7 +72,7 @@ describe('service: "TestService"', () => {
         // arrange
         const checkProject = createTestData.project;
         const checkLastCount = 10;
-        const secondCreatedTest = {
+        const secondCreateTestData = {
             ...createTestData,
             project: 'second-project',
         };
@@ -84,11 +84,35 @@ describe('service: "TestService"', () => {
         // act
         await TestService.createTest(createTestData);
         await TestService.createTest(createTestData);
-        await TestService.createTest(secondCreatedTest);
+        await TestService.createTest(secondCreateTestData);
 
         const lastBuildsIds = await TestService.getLastBuildsIds(checkProject, checkLastCount);
 
         // assert
         assert.deepEqual(lastBuildsIds, expectedLastBuildsIds);
+    });
+
+    it('method: "findTestNamesWithFailsTests"', async () => {
+        // arrange
+        const secondCreateTestData = {
+            ...createTestData,
+            testName: 'second test name',
+        };
+        const buildsIds = [createTestData.buildId, secondCreateTestData.buildId];
+
+        // act
+        const testName = (await TestService.createTest(createTestData)).testName;
+        const secondTestName = (await TestService.createTest(secondCreateTestData)).testName;
+        await TestService.createTest({
+            ...createTestData,
+            status: true,
+        });
+
+        const testNamesWithFailsTests = await TestService.getTestNamesWithFailsTests(
+            createTestData.project,
+            buildsIds
+        );
+        // assert
+        assert.deepEqual(testNamesWithFailsTests, [testName, secondTestName]);
     });
 });
